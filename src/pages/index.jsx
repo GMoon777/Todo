@@ -86,7 +86,6 @@ export const App = () => {
                 setTaskState([...preFilteredList])
                 setTaskTitleState("")
             }
-
         })
 
     }
@@ -149,8 +148,30 @@ export const App = () => {
             setTaskTitleState("")
         }
     }
-
-
+    // select a data source to work on based on if you are viewing a filter source or not
+    // not viewing filtered data so use main task list
+    // viewing filtered task list (only a couple of selected tasks) and so use the saved list (before filtering)
+    // accepts two arguments 1. the id of the task 2. a Boolean letting the function know if this action is to set the task as priority
+    // check to see if the pass in id matches one of the task objects mapped 
+    // check if this is a priority switch call 
+    // create a temporary task object
+    // check if the item has been completed before
+    // check to see if the task is marked as priority
+    // if it's not a priority task simply mark it as completed and timestamp the completion
+    // if it's a priority task mark it as completed and remove the priority flag
+    // if task has been completed before mark it as not completed 
+    // find the index of the task
+    // create a copy of the previous list of tasks
+    // replace the existing task with the updated task
+    // replace the task list in state with the updated task list
+    // function called with a priorityCall
+    // check to see if the task is already completed and if not...
+    // change the priority status of the task
+    // find the index of the task
+    // create a copy of the previous list of tasks
+    // replace the existing task with the updated task
+    // replace the task list in state with the updated task list              
+    // check if we are currently viewing a filtered list and toggle it off if so
 
     const updateCheckedState = function (id, priorityCall) {
         let list = []
@@ -160,65 +181,41 @@ export const App = () => {
         else {
             list = preFilteredList
         }
-        // accepts two arguments 1. the id of the task 2. a Boolean letting the function know if this action is to set the task as priority
         list.map(item => {
-            // map the state
             if (item.id === id) {
-                // check to see if the pass in id matches one of the task objects mapped 
                 if (priorityCall === false) {
-                    // check if this is a priority switch call 
                     let updatedTask = {}
-                    // create a temporary task object
                     if (item.completedAt === null) {
-                        // check if the item has been completed before
                         if (item.isPriority === false) {
-                            // check to see if the task is marked as priority
                             updatedTask = { ...item, completedAt: Date.now(), completed: !item.completed };
-                            // if it's not a priority task simply mark it as completed and timestamp the completion
                         }
                         else {
                             updatedTask = { ...item, completedAt: Date.now(), completed: !item.completed, isPriority: !item.isPriority };
-                            // if it's a priority task mark it as completed and remove the priority flag
                         }
                     }
                     else if (item.completedAt != null) {
-                        // if task has been completed before mark it as not completed 
                         updatedTask = { ...item, completedAt: null, completed: !item.completed };
                     }
                     let check = list.indexOf(item)
-                    // find the index of the task
                     let taskHolder = list
-                    // create a copy of the previous list of tasks
                     taskHolder.splice(check, 1, updatedTask)
-                    // replace the existing task with the updated task
                     setTaskState([...taskHolder])
                     if (isFiltered === true) {
                         setIsFiltered(false)
                         setTaskTitleState("")
                     }
-
-                    // replace the task list in state with the updated task list
                 }
                 else {
-                    // function called with a priorityCall
                     if (item.completed != true) {
-                        // check to see if the task is already completed and if not...
                         let updatedTask = { ...item, isPriority: !item.isPriority };
-                        // change the priority status of the task
                         let check = list.indexOf(item)
-                        // find the index of the task
                         let taskHolder = list
-                        // create a copy of the previous list of tasks
                         taskHolder.splice(check, 1, updatedTask)
-                        // replace the existing task with the updated task
                         setTaskState([...taskHolder])
-                           // replace the task list in state with the updated task list
                         if (isFiltered === true) {
-                            // check if we are currently viewing a filtered list and toggle it off if so
                             setIsFiltered(false)
                             setTaskTitleState("")
                         }
-                     
                     }
                 }
             }
