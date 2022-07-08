@@ -11,6 +11,8 @@ const TodoList = () => {
     const [isFiltered, setIsFiltered] = useState(false)
     const [preFilteredList, setPreFilteredList] = useState([])
     const [showTaskListItems, setShowTaskListItems] = useState(false)
+    const [sortBy, setSortBy] = useState("Time")
+
 
     const setTaskListLengthText = function () {
         let list = []
@@ -37,18 +39,7 @@ const TodoList = () => {
         }
     }
 
-    const sortTodoList = function (type, e) {
-        e.preventDefault(e);
-        let filteredList = tasks
-        if (type === "ABC") {
-            filteredList.sort(((a, b) => a.title.localeCompare(b.title)))
-            setTasks([...filteredList])
-        }
-        else if (type === "Time") {
-            filteredList.sort(((a, b) => a.createdAt > b.createdAt))
-            setTasks([...filteredList])
-        }
-    }
+    
 
     const filterTodoList = function (title, e) {
         e.preventDefault(e);
@@ -221,8 +212,8 @@ const TodoList = () => {
             return true
         }
         )
-
     }
+
 
     return (
         <div className="app">
@@ -233,12 +224,14 @@ const TodoList = () => {
                 </input>
                 <button onClick={(e) => addTask(e)}>Add Task</button>
                 <button onClick={(e) => filterTodoList(userTextInputValue, e)}>{isFiltered ? 'Show All' : 'Filter By Name'}</button>
-                <button onClick={(e) => sortTodoList("ABC", e)}>Sort By Alphabetical</button>
-                <button onClick={(e) => sortTodoList("Time", e)}>Sort By Time Created</button>
+                <button onClick={(e) => e.preventDefault(e) || setSortBy("ABC")}>Sort By Alphabetical</button>
+                <button onClick={(e) => e.preventDefault(e) || setSortBy("Time")}>Sort By Time Created</button>
                 <button onClick={(e) => changeTodoListName(userTextInputValue, e)}>Change Todo List Name</button>
             </form>
             <ul>
-                {tasks.map(item => {
+                {tasks
+                .sort((((a, b) => sortBy === "ABC" ? a.title.localeCompare(b.title) : a.createdAt > b.createdAt)))
+                .map(item => {
                     return (
 
                         <div
