@@ -3,109 +3,108 @@ import { useState } from 'react'
 const Todo = () => {
 
     // states
-    const [tasksState, setTaskState] = useState([])
-    const [taskTitleState, setTaskTitleState] = useState("")
+    const [tasks, setTasks] = useState([])
+    const [userTextInputValue, setUserTextInputValue] = useState("")
     const [todoListName, setTodoListName] = useState("My Todo List")
     const [todoListNameHolder, setTodoListNameHolder] = useState("")
-    const [todoListTasksAmount, setTodoListTasksAmount] = useState("")
     const [isFiltered, setIsFiltered] = useState(false)
     const [preFilteredList, setPreFilteredList] = useState([])
+    const [showTaskListItems, setShowTaskListItems] = useState(false)
 
-    // new task template prototype
-    function Task(title) {
-        this.title = title;
-        this.completed = false;
-        this.createdAt = Date.now()
-        this.completedAt = null;
-        this.isPriority = false;
-        this.id = Math.round((Math.floor(Math.random() * 10000000000) + 1) / 1) * 1
-    }
-
-    const setTaskListLengthText = function (showNothing) {
+    const setTaskListLengthText = function () {
         let list = []
-        if (isFiltered === false) {
-            list = tasksState
+        if (!isFiltered) {
+            list = tasks
         }
         else {
             list = preFilteredList
         }
-        if (showNothing === false) {
+        if (showTaskListItems) {
             if (list.length === 1) {
-                setTodoListTasksAmount("(" + list.length + " " + "Item" + ")")
+                return(`(${list.length} Item)`)
             }
             else if (list.length === 0) {
-                setTodoListTasksAmount("")
+                return(``)
             }
             else {
-                setTodoListTasksAmount("(" + list.length + " " + "Items" + ")")
+                return(`(${list.length} Items)`)
             }
         }
         else {
-            setTodoListTasksAmount("")
+            return(``)
         }
     }
 
     const sortTodoList = function (type, e) {
         e.preventDefault(e);
-        let filteredList = tasksState
+        let filteredList = tasks
         if (type === "ABC") {
             filteredList.sort(((a, b) => a.title.localeCompare(b.title)))
-            setTaskState([...filteredList])
+            setTasks([...filteredList])
         }
         else if (type === "Time") {
             filteredList.sort(((a, b) => a.createdAt > b.createdAt))
-            setTaskState([...filteredList])
+            setTasks([...filteredList])
         }
     }
 
     const filterTodoList = function (title, e) {
         e.preventDefault(e);
-        if (taskTitleState !== "") {
+        if (userTextInputValue !== "") {
             if (todoListName === "Please enter a name for your item") {
-                setTaskListLengthText(false)
+                setShowTaskListItems(false)
                 setTodoListName(todoListNameHolder)
             }
         }
         let filteredList = []
-        tasksState.map(item => {
+        tasks.map(item => {
 
             if (isFiltered === false) {
-                if (taskTitleState !== "") {
+                if (userTextInputValue !== "") {
                     if (item.title === title) {
-                        setPreFilteredList([...tasksState])
+                        setPreFilteredList([...tasks])
                         filteredList.push(item)
-                        setTaskState([...filteredList])
+                        setTasks([...filteredList])
                         setIsFiltered(true)
                     }
                 }
             }
             else {
                 setIsFiltered(false)
-                setTaskState([...preFilteredList])
-                setTaskTitleState("")
+                setTasks([...preFilteredList])
+                setUserTextInputValue("")
             }
-        })
+            return true
+        }
+        )
 
     }
 
     const changeTodoListName = function (name, e) {
         e.preventDefault(e);
-        if (taskTitleState !== "") {
+        if (userTextInputValue !== "") {
             setTodoListName(name)
-            setTaskTitleState("")
+            setUserTextInputValue("")
         }
     }
 
     const addTask = function (e) {
         e.preventDefault(e);
         if (isFiltered !== true) {
-            if (taskTitleState !== "") {
-                let taskHolder = tasksState
-                const newTask = new Task(taskTitleState)
-                taskHolder.push(newTask)
-                setTaskState([...taskHolder])
-                setTaskTitleState("")
-                setTaskListLengthText(false)
+            if (userTextInputValue !== "") {
+                setTasks(currentState => {
+                    let newTask = {
+                        title: userTextInputValue,
+                        completed: false,
+                        createdAt: Date.now(),
+                        completedAt: null,
+                        isPriority: false,
+                        id: Math.round((Math.floor(Math.random() * 10000000000) + 1) / 1) * 1
+                    }
+                    return [...currentState, newTask]
+                })
+                setUserTextInputValue("")
+                setShowTaskListItems(true)
                 if (todoListName === "Please enter a name for your item") {
                     setTodoListName(todoListNameHolder)
                 }
@@ -114,7 +113,7 @@ const Todo = () => {
                 if (todoListName !== "Please enter a name for your item") {
                     setTodoListNameHolder(todoListName)
                     setTodoListName("Please enter a name for your item")
-                    setTaskListLengthText(true)
+                    setShowTaskListItems(false)
                 }
             }
         }
@@ -122,7 +121,7 @@ const Todo = () => {
     const deleteTask = function (id) {
         let list = []
         if (isFiltered === false) {
-            list = tasksState
+            list = tasks
         }
         else {
             list = preFilteredList
@@ -133,17 +132,17 @@ const Todo = () => {
                 let check = list.indexOf(item)
                 let taskHolder = list
                 taskHolder.splice(check, 1,)
-                setTaskState([...taskHolder])
-                setTaskListLengthText(false)
+                setTasks([...taskHolder])
+                setShowTaskListItems(true)
                 if (todoListName === "Please enter a name for your item") {
                     setTodoListName(todoListNameHolder)
                 }
             }
-
+            return true
         })
         if (isFiltered === true) {
             setIsFiltered(false)
-            setTaskTitleState("")
+            setUserTextInputValue("")
         }
     }
     // select a data source to work on based on if you are viewing a filter source or not
@@ -174,7 +173,7 @@ const Todo = () => {
     const updateCheckedState = function (id, priorityCall) {
         let list = []
         if (isFiltered === false) {
-            list = tasksState
+            list = tasks
         }
         else {
             list = preFilteredList
@@ -197,10 +196,10 @@ const Todo = () => {
                     let check = list.indexOf(item)
                     let taskHolder = list
                     taskHolder.splice(check, 1, updatedTask)
-                    setTaskState([...taskHolder])
+                    setTasks([...taskHolder])
                     if (isFiltered === true) {
                         setIsFiltered(false)
-                        setTaskTitleState("")
+                        setUserTextInputValue("")
                     }
                 }
                 else {
@@ -209,34 +208,35 @@ const Todo = () => {
                         let check = list.indexOf(item)
                         let taskHolder = list
                         taskHolder.splice(check, 1, updatedTask)
-                        setTaskState([...taskHolder])
+                        setTasks([...taskHolder])
                         if (isFiltered === true) {
                             setIsFiltered(false)
-                            setTaskTitleState("")
+                            setUserTextInputValue("")
                         }
                     }
                 }
             }
-
-        })
+            return true
+        }
+        )
 
     }
 
     return (
         <div className="app">
-            <h1>{todoListName} {todoListTasksAmount}</h1>
+            <h1>{todoListName} {setTaskListLengthText()}</h1>
 
             <form>
-                <input placeholder="name..." value={taskTitleState} onChange={(e) => setTaskTitleState(e.target.value)}>
+                <input placeholder="name..." value={userTextInputValue} onChange={(e) => setUserTextInputValue(e.target.value)}>
                 </input>
                 <button onClick={(e) => addTask(e)}>Add Task</button>
-                <button onClick={(e) => filterTodoList(taskTitleState, e)}>{isFiltered ? 'Show All' : 'Filter By Name'}</button>
+                <button onClick={(e) => filterTodoList(userTextInputValue, e)}>{isFiltered ? 'Show All' : 'Filter By Name'}</button>
                 <button onClick={(e) => sortTodoList("ABC", e)}>Sort By Alphabetical</button>
                 <button onClick={(e) => sortTodoList("Time", e)}>Sort By Time Created</button>
-                <button onClick={(e) => changeTodoListName(taskTitleState, e)}>Change Todo List Name</button>
+                <button onClick={(e) => changeTodoListName(userTextInputValue, e)}>Change Todo List Name</button>
             </form>
             <ul>
-                {tasksState.map(item => {
+                {tasks.map(item => {
                     return (
 
                         <div
