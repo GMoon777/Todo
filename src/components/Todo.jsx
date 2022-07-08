@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid';
 
 const TodoList = () => {
 
@@ -99,7 +100,7 @@ const TodoList = () => {
                         createdAt: Date.now(),
                         completedAt: null,
                         isPriority: false,
-                        id: Math.round((Math.floor(Math.random() * 10000000000) + 1) / 1) * 1
+                        id: uuidv4()
                     }
                     return [...currentState, newTask]
                 })
