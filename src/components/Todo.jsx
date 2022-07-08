@@ -21,10 +21,11 @@ const TodoList = () => {
             list = preFilteredList
         }
         if (showTaskListItems) {
+            // has to be specifically 1 so that the correct grammar is used.
             if (list.length === 1) {
                 return(`(${list.length} Item)`)
             }
-            else if (list.length === 0) {
+            else if (!list.length) {
                 return(``)
             }
             else {
@@ -51,7 +52,7 @@ const TodoList = () => {
 
     const filterTodoList = function (title, e) {
         e.preventDefault(e);
-        if (userTextInputValue !== "") {
+        if (userTextInputValue.length) {
             if (todoListName === "Please enter a name for your item") {
                 setShowTaskListItems(false)
                 setTodoListName(todoListNameHolder)
@@ -60,8 +61,8 @@ const TodoList = () => {
         let filteredList = []
         tasks.map(item => {
 
-            if (isFiltered === false) {
-                if (userTextInputValue !== "") {
+            if (!isFiltered) {
+                if (userTextInputValue.length) {
                     if (item.title === title) {
                         setPreFilteredList([...tasks])
                         filteredList.push(item)
@@ -83,7 +84,7 @@ const TodoList = () => {
 
     const changeTodoListName = function (name, e) {
         e.preventDefault(e);
-        if (userTextInputValue !== "") {
+        if (userTextInputValue.length) {
             setTodoListName(name)
             setUserTextInputValue("")
         }
@@ -91,8 +92,8 @@ const TodoList = () => {
 
     const addTask = function (e) {
         e.preventDefault(e);
-        if (isFiltered !== true) {
-            if (userTextInputValue !== "") {
+        if (!isFiltered) {
+            if (userTextInputValue.length) {
                 setTasks(currentState => {
                     let newTask = {
                         title: userTextInputValue,
@@ -121,7 +122,7 @@ const TodoList = () => {
     }
     const deleteTask = function (id) {
         let list = []
-        if (isFiltered === false) {
+        if (!isFiltered) {
             list = tasks
         }
         else {
@@ -141,7 +142,7 @@ const TodoList = () => {
             }
             return true
         })
-        if (isFiltered === true) {
+        if (isFiltered) {
             setIsFiltered(false)
             setUserTextInputValue("")
         }
@@ -173,7 +174,7 @@ const TodoList = () => {
 
     const updateCheckedState = function (id, priorityCall) {
         let list = []
-        if (isFiltered === false) {
+        if (!isFiltered) {
             list = tasks
         }
         else {
@@ -181,10 +182,10 @@ const TodoList = () => {
         }
         list.map(item => {
             if (item.id === id) {
-                if (priorityCall === false) {
+                if (!priorityCall) {
                     let updatedTask = {}
                     if (item.completedAt === null) {
-                        if (item.isPriority === false) {
+                        if (!item.isPriority) {
                             updatedTask = { ...item, completedAt: Date.now(), completed: !item.completed };
                         }
                         else {
@@ -198,19 +199,19 @@ const TodoList = () => {
                     let taskHolder = list
                     taskHolder.splice(check, 1, updatedTask)
                     setTasks([...taskHolder])
-                    if (isFiltered === true) {
+                    if (isFiltered) {
                         setIsFiltered(false)
                         setUserTextInputValue("")
                     }
                 }
                 else {
-                    if (item.completed !== true) {
+                    if (!item.completed) {
                         let updatedTask = { ...item, isPriority: !item.isPriority };
                         let check = list.indexOf(item)
                         let taskHolder = list
                         taskHolder.splice(check, 1, updatedTask)
                         setTasks([...taskHolder])
-                        if (isFiltered === true) {
+                        if (isFiltered) {
                             setIsFiltered(false)
                             setUserTextInputValue("")
                         }
