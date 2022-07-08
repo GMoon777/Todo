@@ -62,7 +62,7 @@ export const App = () => {
 
     const filterTodoList = function (title, e) {
         e.preventDefault(e);
-        if (taskTitleState != "") {
+        if (taskTitleState !== "") {
             if (todoListName === "Please enter a name for your item") {
                 setTaskListLengthText(false)
                 setTodoListName(todoListNameHolder)
@@ -72,7 +72,7 @@ export const App = () => {
         tasksState.map(item => {
 
             if (isFiltered === false) {
-                if (taskTitleState != "") {
+                if (taskTitleState !== "") {
                     if (item.title === title) {
                         setPreFilteredList([...tasksState])
                         filteredList.push(item)
@@ -92,7 +92,7 @@ export const App = () => {
 
     const changeTodoListName = function (name, e) {
         e.preventDefault(e);
-        if (taskTitleState != "") {
+        if (taskTitleState !== "") {
             setTodoListName(name)
             setTaskTitleState("")
         }
@@ -100,8 +100,8 @@ export const App = () => {
 
     const addTask = function (e) {
         e.preventDefault(e);
-        if (isFiltered != true) {
-            if (taskTitleState != "") {
+        if (isFiltered !== true) {
+            if (taskTitleState !== "") {
                 let taskHolder = tasksState
                 const newTask = new Task(taskTitleState)
                 taskHolder.push(newTask)
@@ -113,7 +113,7 @@ export const App = () => {
                 }
             }
             else {
-                if (todoListName != "Please enter a name for your item") {
+                if (todoListName !== "Please enter a name for your item") {
                     setTodoListNameHolder(todoListName)
                     setTodoListName("Please enter a name for your item")
                     setTaskListLengthText(true)
@@ -193,7 +193,7 @@ export const App = () => {
                             updatedTask = { ...item, completedAt: Date.now(), completed: !item.completed, isPriority: !item.isPriority };
                         }
                     }
-                    else if (item.completedAt != null) {
+                    else if (item.completedAt !== null) {
                         updatedTask = { ...item, completedAt: null, completed: !item.completed };
                     }
                     let check = list.indexOf(item)
@@ -206,7 +206,7 @@ export const App = () => {
                     }
                 }
                 else {
-                    if (item.completed != true) {
+                    if (item.completed !== true) {
                         let updatedTask = { ...item, isPriority: !item.isPriority };
                         let check = list.indexOf(item)
                         let taskHolder = list
