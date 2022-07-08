@@ -9,7 +9,6 @@ const TodoList = () => {
     const [todoListName, setTodoListName] = useState("My Todo List")
     const [todoListNameHolder, setTodoListNameHolder] = useState("")
     const [isFiltered, setIsFiltered] = useState(false)
-    const [preFilteredList, setPreFilteredList] = useState([])
     const [showTaskListItems, setShowTaskListItems] = useState(false)
     const [sortBy, setSortBy] = useState("Time")
 
@@ -84,6 +83,7 @@ const TodoList = () => {
                     setTodoListName(todoListNameHolder)
                 }
             }
+            return true
         })
         if (isFiltered) {
             setUserTextInputValue("")
@@ -107,7 +107,6 @@ const TodoList = () => {
                         updatedTask = { ...item, completedAt: null, completed: !item.completed };
                     }
                     let check = tasks.indexOf(item)
-                    let taskHolder = tasks
                     tasks.splice(check, 1)
                     setTasks(currentState => {
                         return [...currentState, updatedTask]
@@ -117,7 +116,6 @@ const TodoList = () => {
                     if (!item.completed) {
                         let updatedTask = { ...item, isPriority: !item.isPriority };
                         let check = tasks.indexOf(item)
-                        let taskHolder = tasks
                         tasks.splice(check, 1)
                         setTasks(currentState => {
                             return [...currentState, updatedTask]
@@ -174,6 +172,7 @@ const TodoList = () => {
                             }
                             return true
                         }
+                        return false
                     })
                     .map(item => {
                         return (
