@@ -71,20 +71,14 @@ const TodoList = () => {
     }
 
     const deleteTask = function (id) {
-        tasks.map(item => {
-            if (item.id === id) {
-                let check = tasks.indexOf(item)
-                tasks.splice(check, 1)
-                setTasks(currentState => {
-                    return [...currentState]
-                })
-                setShowTaskListItems(true)
-                if (todoListName === "Please enter a name for your item") {
-                    setTodoListName(todoListNameHolder)
-                }
-            }
-            return true
-        })
+        setTasks(t => t.filter((task) => task.id !== id));
+  
+        setShowTaskListItems(true)
+        
+        if (todoListName === "Please enter a name for your item") {
+            setTodoListName(todoListNameHolder)
+        }
+        
         if (isFiltered) {
             setUserTextInputValue("")
         }
@@ -149,30 +143,13 @@ const TodoList = () => {
                         if (isFiltered) {
                             if (userTextInputValue.length) {
                                 if (item.title === userTextInputValue) {
-                                    if (todoListName === "Please enter the name of the task to filter") {
-                                        setTodoListName(todoListNameHolder)
-                                        setShowTaskListItems(true)
-                                    }
+                                  
                                     return true;
                                 }
-
                             }
-                            else {
-                                if (todoListName !== "Please enter the name of the task to filter") {
-                                    setTodoListNameHolder(todoListName)
-                                    setTodoListName("Please enter the name of the task to filter")
-                                    setShowTaskListItems(false)
-                                }
-                            }
+                            return false;
                         }
-                        else {
-                            if (todoListName === "Please enter the name of the task to filter") {
-                                setTodoListName(todoListNameHolder)
-                                setShowTaskListItems(true)
-                            }
-                            return true
-                        }
-                        return false
+                        return true
                     })
                     .map(item => {
                         return (
